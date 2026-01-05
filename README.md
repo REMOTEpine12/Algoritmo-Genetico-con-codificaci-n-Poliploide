@@ -274,7 +274,5 @@ mutation_rates = {
 - Job Shop Scheduling Problem: formulaciones y métodos de solución
 
 ## 👥 Autor
-
-Implementación de la Práctica 2 - Algoritmos Genéticos Poliploides
-Tópicos Avanzados de Algoritmos Bioinspirados
-Dra. Miriam Pescador Rojas
+- [@Remotepine99](https://github.com/REMOTEpine12) - Israel Díaz
+- [@AtzMax](https://github.com/AtzMax) - Atzin Ignacio
