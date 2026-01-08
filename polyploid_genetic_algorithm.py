@@ -22,7 +22,7 @@ import json
 # =============================================================================
 # CONFIGURACIÓN GLOBAL
 # =============================================================================
-OUTPUT_DIR = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/"
+OUTPUT_DIR = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/Algoritmo-Genetico-con-codificaci-n-Poliploide/"
 
 # =============================================================================
 # CLASE PARA MANEJAR LOS DATOS DEL PROBLEMA

@@ -9,7 +9,7 @@ import sys
 # =============================================================================
 # CONFIGURACIÓN GLOBAL
 # =============================================================================
-OUTPUT_DIR = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/"
+OUTPUT_DIR = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/Algoritmo-Genetico-con-codificaci-n-Poliploide/"
 
 def print_section(title):
     """Imprime un título de sección formateado."""
