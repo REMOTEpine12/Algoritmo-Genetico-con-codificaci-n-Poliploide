@@ -1,0 +1,83 @@
+================================================================================
+RESPUESTAS A LAS PREGUNTAS DE LA PRÁCTICA
+================================================================================
+
+a) ¿Hay evidencia de que una política sea más efectiva que otra?
+--------------------------------------------------------------------------------
+
+Basándonos en el hipervolumen promedio en la generación 100:
+
+1. FIFO: 815.97
+2. LTP: 637.48
+3. RRFIFO: 526.23
+4. RRLTP: 515.20
+5. STP: 467.69
+6. RRECA: 458.45
+
+Conclusión: La política FIFO muestra mejor desempeño en términos de hipervolumen, lo que indica que encuentra un frente de Pareto con mejor convergencia y diversidad. Sin embargo, la efectividad de cada política puede depender del contexto: si se prioriza el makespan o la energía, algunas políticas pueden ser más adecuadas que otras.
+
+
+b) ¿Cuál fue el operador de mutación que tuvo mejor desempeño?
+--------------------------------------------------------------------------------
+
+Número de veces aplicada cada mutación:
+- inter_chromosome: 3577
+- reciprocal_exchange: 2400
+- displacement: 1162
+
+Conclusión: La mutación inter-cromosoma (probabilidad 0.3) se aplicó más frecuentemente y es particularmente efectiva en este contexto poliploide porque permite intercambiar estrategias completas entre políticas, lo que genera diversidad significativa en el espacio de búsqueda. La mutación por intercambio recíproco proporciona refinamiento local, mientras que el desplazamiento mantiene la estructura pero explora diferentes secuencias.
+
+
+c) Valores de parámetros y su efecto
+--------------------------------------------------------------------------------
+
+Parámetros utilizados:
+- Tamaño de población: 20 individuos
+- Generaciones: 100
+- Tasa de cruza: 0.8
+- Probabilidad mutación inter-cromosoma: 0.3
+- Probabilidad mutación intercambio recíproco: 0.2
+- Probabilidad mutación desplazamiento: 0.1
+
+Análisis del efecto de parámetros:
+
+1. Tamaño de población: Un tamaño de 20 permite suficiente diversidad sin comprometer la velocidad de convergencia. Poblaciones más pequeñas convergirían prematuramente, mientras que poblaciones más grandes serían computacionalmente costosas.
+
+2. Número de generaciones: 100 generaciones permiten suficiente tiempo para que el algoritmo explore el espacio de búsqueda y converja hacia el frente de Pareto. Se observa mejora consistente en el hipervolumen hasta la generación 80-100.
+
+3. Tasa de cruza (0.8): Alta tasa de cruza favorece la explotación de buenas soluciones mediante recombinación. Reduce el riesgo de estancamiento.
+
+4. Tasas de mutación: La distribución (0.3, 0.2, 0.1) prioriza exploración global (inter-cromosoma) sobre refinamiento local, lo cual es apropiado dado el espacio de búsqueda complejo del problema.
+
+
+d) Análisis del frente de Pareto final
+--------------------------------------------------------------------------------
+
+Para responder esta pregunta, consulte las gráficas generadas:
+- pareto_FIFO.png
+- pareto_LTP.png
+- pareto_STP.png
+- pareto_RRFIFO.png
+- pareto_RRLTP.png
+- pareto_RRECA.png
+
+Observaciones generales:
+- Las políticas Round Robin tienden a producir mejores soluciones en makespan   debido a su balanceo de carga entre trabajos.
+- Las políticas basadas en tiempo (LTP/STP) pueden encontrar soluciones en   los extremos del frente (optimizando un objetivo a costa del otro).
+- Las soluciones en la rodilla típicamente corresponden a políticas híbridas   como RRECA, que balancean ambos objetivos.
+
+
+e) Diagramas de Gantt
+--------------------------------------------------------------------------------
+
+Se han generado 3 diagramas de Gantt por cada política:
+1. gantt_{POLICY}_knee.png - Solución de compromiso (rodilla)
+2. gantt_{POLICY}_min_makespan.png - Optimiza tiempo total
+3. gantt_{POLICY}_min_energy.png - Optimiza consumo energético
+
+Comparando estos diagramas se puede observar:
+- El diagrama de min_makespan muestra mejor utilización de máquinas en paralelo
+- El diagrama de min_energy puede tener mayor tiempo total pero usa máquinas   más eficientes energéticamente
+- La solución de rodilla balancea ambos aspectos
+
+================================================================================

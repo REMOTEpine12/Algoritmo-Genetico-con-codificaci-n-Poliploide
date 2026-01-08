@@ -17,6 +17,29 @@ def print_section(title):
     print(title.center(80))
     print("="*80 + "\n")
 
+def is_prime(n):
+    """Verifica si un número es primo."""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    for i in range(3, int(n**0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def generate_prime_seeds(count):
+    """Genera 'count' números primos para usar como semillas."""
+    primes = []
+    candidate = 2
+    while len(primes) < count:
+        if is_prime(candidate):
+            primes.append(candidate)
+        candidate += 1
+    return primes
+
 def save_hypervolume_tables(hypervolume_results, data, filename=None, seeds=None):
     """
     Guarda las tablas de hipervolumen en un archivo.
@@ -96,18 +119,18 @@ def save_hypervolume_tables(hypervolume_results, data, filename=None, seeds=None
 
 def print_and_track_seeds(num_runs):
     """
-    Crea e imprime un diccionario de semillas para cada corrida.
+    Genera e imprime números primos como semillas para cada corrida.
     
     Args:
         num_runs: Número de corridas
     
     Returns:
-        Lista de semillas usadas
+        Lista de semillas (números primos) usadas
     """
-    seeds = list(range(num_runs))
+    seeds = generate_prime_seeds(num_runs)
     
     print("\n" + "="*80)
-    print("SEMILLAS PARA CADA CORRIDA")
+    print("SEMILLAS PARA CADA CORRIDA (NÚMEROS PRIMOS)")
     print("="*80 + "\n")
     
     for i, seed in enumerate(seeds, 1):

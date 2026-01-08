@@ -852,7 +852,29 @@ class PolyploidNSGAII:
         for gen in range(self.generations):
             if verbose and (gen + 1) % 20 == 0:
                 print(f"Generación {gen + 1}/{self.generations}")
-            
+                
+                # Imprimir el mejor individuo de cada política
+                print("\n  Mejores individuos por política:")
+                for policy in self.data.policy_names:
+                    fronts = self.fast_non_dominated_sort(self.population, policy)
+                    if fronts and len(fronts[0]) > 0:
+                        # Encontrar el individuo con mejor balance (punto de la rodilla)
+                        best_idx = 0
+                        best_distance = float('inf')
+                        for idx, ind in enumerate(fronts[0]):
+                            # Normalizar objetivos y calcular distancia al ideal
+                            makespan = ind.objectives[policy][0]
+                            energy = ind.objectives[policy][1]
+                            distance = (makespan**2 + energy**2)**0.5
+                            if distance < best_distance:
+                                best_distance = distance
+                                best_idx = idx
+                        
+                        best = fronts[0][best_idx]
+                        makespan = best.objectives[policy][0]
+                        energy = best.objectives[policy][1]
+                        print(f"    {policy:8s}: Makespan={makespan:8.2f} | Energía={energy:8.2f}")
+                print()
             # Crear población de descendientes
             offspring = []
             
