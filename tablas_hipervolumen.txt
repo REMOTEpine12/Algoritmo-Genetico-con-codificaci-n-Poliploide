@@ -2,6 +2,19 @@
 ESTADÍSTICAS DE HIPERVOLUMEN POR POLÍTICA Y GENERACIÓN
 ====================================================================================================
 
+SEMILLAS USADAS EN CADA CORRIDA:
+----------------------------------------------------------------------------------------------------
+  Corrida 1: seed = 2
+  Corrida 2: seed = 3
+  Corrida 3: seed = 5
+  Corrida 4: seed = 7
+  Corrida 5: seed = 11
+  Corrida 6: seed = 13
+  Corrida 7: seed = 17
+  Corrida 8: seed = 19
+  Corrida 9: seed = 23
+  Corrida 10: seed = 29
+
 Tabla 1: Políticas FIFO, LTP, STP
 ----------------------------------------------------------------------------------------------------
 Generación   |             FIFO             |             LTP              |             STP             

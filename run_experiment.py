@@ -124,7 +124,7 @@ def answer_questions(algorithms, hypervolume_results, data):
         hypervolume_results: Resultados de hipervolumen
         data: Datos del problema
     """
-    filename = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/respuestas_preguntas.txt"
+    filename = OUTPUT_DIR + "respuestas_preguntas.txt"
     
     with open(filename, 'w', encoding='utf-8') as f:
         f.write("="*80 + "\n")
@@ -295,7 +295,8 @@ def main():
     
     algorithms, hypervolume_results = run_experiment(
         num_runs=NUM_RUNS,
-        generations=GENERATIONS
+        generations=GENERATIONS,
+        seeds=seeds
     )
     
     # Guardar tablas de hipervolumen
@@ -314,7 +315,8 @@ def main():
     # Resumen final
     print_section("EXPERIMENTACIÓN COMPLETADA")
     
-    print("Archivos generados en C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/:")
+    print("Archivos generados en:")
+    print(OUTPUT_DIR)
     print("\n📊 Tablas y Reportes:")
     print("  - tablas_hipervolumen.txt")
     print("  - respuestas_preguntas.txt")

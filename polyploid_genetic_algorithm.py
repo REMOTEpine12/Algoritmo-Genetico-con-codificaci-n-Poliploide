@@ -843,27 +843,43 @@ class PolyploidNSGAII:
             if verbose and (gen + 1) % 20 == 0:
                 print(f"Generación {gen + 1}/{self.generations}")
                 
-                # Imprimir el mejor individuo de cada política
+                # Imprimir los mejores individuos de cada política
                 print("\n  Mejores individuos por política:")
                 for policy in self.data.policy_names:
                     fronts = self.fast_non_dominated_sort(self.population, policy)
                     if fronts and len(fronts[0]) > 0:
-                        # Encontrar el individuo con mejor balance (punto de la rodilla)
-                        best_idx = 0
+                        pareto = fronts[0]
+                        
+                        # 1. Encontrar el individuo con mejor balance (punto de la rodilla)
+                        best_knee_idx = 0
                         best_distance = float('inf')
-                        for idx, ind in enumerate(fronts[0]):
-                            # Normalizar objetivos y calcular distancia al ideal
+                        for idx, ind in enumerate(pareto):
                             makespan = ind.objectives[policy][0]
                             energy = ind.objectives[policy][1]
                             distance = (makespan**2 + energy**2)**0.5
                             if distance < best_distance:
                                 best_distance = distance
-                                best_idx = idx
+                                best_knee_idx = idx
                         
-                        best = fronts[0][best_idx]
-                        makespan = best.objectives[policy][0]
-                        energy = best.objectives[policy][1]
-                        print(f"    {policy:8s}: Makespan={makespan:8.2f} | Energía={energy:8.2f}")
+                        knee_ind = pareto[best_knee_idx]
+                        knee_makespan, knee_energy = knee_ind.objectives[policy]
+                        
+                        # 2. Encontrar el mejor por mínimo makespan
+                        min_makespan_idx = min(range(len(pareto)), 
+                                              key=lambda i: pareto[i].objectives[policy][0])
+                        min_ms_ind = pareto[min_makespan_idx]
+                        min_ms_makespan, min_ms_energy = min_ms_ind.objectives[policy]
+                        
+                        # 3. Encontrar el mejor por mínima energía
+                        min_energy_idx = min(range(len(pareto)), 
+                                            key=lambda i: pareto[i].objectives[policy][1])
+                        min_en_ind = pareto[min_energy_idx]
+                        min_en_makespan, min_en_energy = min_en_ind.objectives[policy]
+                        
+                        print(f"    {policy:8s}:")
+                        print(f"      - Rodilla:         MS={knee_makespan:8.2f} | EN={knee_energy:8.2f}")
+                        print(f"      - Min Makespan:    MS={min_ms_makespan:8.2f} | EN={min_ms_energy:8.2f}")
+                        print(f"      - Min Energía:     MS={min_en_makespan:8.2f} | EN={min_en_energy:8.2f}")
                 print()
             
             # Crear población de descendientes
@@ -1171,13 +1187,14 @@ def generate_report(algorithm: PolyploidNSGAII, policy: str,
 # FUNCIÓN PRINCIPAL DE EXPERIMENTACIÓN
 # =============================================================================
 
-def run_experiment(num_runs: int = 10, generations: int = 100):
+def run_experiment(num_runs: int = 10, generations: int = 100, seeds: List[int] = None):
     """
     Ejecuta múltiples corridas del algoritmo y recopila estadísticas.
     
     Args:
         num_runs: Número de ejecuciones
         generations: Número de generaciones por ejecución
+        seeds: Lista de semillas para reproducibilidad (si None, usa range(num_runs))
     """
     print("=" * 80)
     print("INICIO DE EXPERIMENTACIÓN")
@@ -1185,6 +1202,10 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
     
     # Inicializar datos del problema
     data = JobShopData()
+    
+    # Si no se proporcionan semillas, usar rango secuencial
+    if seeds is None:
+        seeds = list(range(num_runs))
     
     # Almacenar resultados de hipervolumen
     hypervolume_results = {policy: {gen: [] for gen in [20, 40, 60, 80, 100]} 
@@ -1197,11 +1218,12 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
     for run in range(num_runs):
         print(f"\n{'=' * 80}")
         print(f"Ejecución {run + 1}/{num_runs}")
+        print(f"Semilla: {seeds[run]}")
         print(f"{'=' * 80}")
         
-        # Crear algoritmo con semilla diferente
+        # Crear algoritmo con semilla específica
         algorithm = PolyploidNSGAII(data, population_size=20, 
-                                   generations=generations, seed=run)
+                                   generations=generations, seed=seeds[run])
         
         # Ejecutar algoritmo
         final_population = algorithm.run(verbose=True)
@@ -1249,7 +1271,7 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
         
         # Graficar frente de Pareto
         plot_pareto_front(median_algorithm, policy, 
-                         f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/pareto_{policy}.png")
+                         OUTPUT_DIR + f"pareto_{policy}.png")
         
         # Obtener solución de la rodilla
         knee_solution = median_algorithm.find_knee_solution(policy)
@@ -1257,11 +1279,11 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
         if knee_solution:
             # Generar diagrama de Gantt para la rodilla
             create_gantt_chart(knee_solution, policy, data, 
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_knee.png")
+                             OUTPUT_DIR + f"gantt_{policy}_knee.png")
             
             # Generar reporte
             generate_report(median_algorithm, policy, knee_solution, 
-                          f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/report_{policy}.txt")
+                          OUTPUT_DIR + f"report_{policy}.txt")
         
         # Obtener extremos del frente de Pareto
         pareto_front = median_algorithm.get_pareto_front(policy)
@@ -1271,11 +1293,11 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
             
             # Extremo con menor makespan
             create_gantt_chart(pareto_front[0], policy, data,
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_min_makespan.png")
+                             OUTPUT_DIR + f"gantt_{policy}_min_makespan.png")
             
             # Extremo con mayor makespan (menor energía generalmente)
             create_gantt_chart(pareto_front[-1], policy, data,
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_min_energy.png")
+                             OUTPUT_DIR + f"gantt_{policy}_min_energy.png")
     
     print(f"\n{'=' * 80}")
     print("EXPERIMENTACIÓN COMPLETADA")
@@ -1293,4 +1315,4 @@ if __name__ == "__main__":
     algorithms, hv_results = run_experiment(num_runs=10, generations=100)
     
     print("\n¡Todos los resultados han sido generados exitosamente!")
-    print("Revisa la carpeta C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/ para ver los archivos generados.")
+    print(f"Revisa la carpeta {OUTPUT_DIR} para ver los archivos generados.")
