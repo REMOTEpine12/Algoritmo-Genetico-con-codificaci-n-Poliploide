@@ -6,22 +6,29 @@ Ejecuta 10 corridas del algoritmo y genera todos los reportes solicitados
 from polyploid_genetic_algorithm import *
 import sys
 
+# =============================================================================
+# CONFIGURACIÓN GLOBAL
+# =============================================================================
+OUTPUT_DIR = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/"
+
 def print_section(title):
     """Imprime un título de sección formateado."""
     print("\n" + "="*80)
     print(title.center(80))
     print("="*80 + "\n")
 
-def save_hypervolume_tables(hypervolume_results, data, filename, seeds=None):
+def save_hypervolume_tables(hypervolume_results, data, filename=None, seeds=None):
     """
     Guarda las tablas de hipervolumen en un archivo.
     
     Args:
         hypervolume_results: Diccionario con resultados de hipervolumen
         data: Datos del problema
-        filename: Nombre del archivo de salida
+        filename: Nombre del archivo de salida (usa OUTPUT_DIR si no se especifica)
         seeds: Lista de semillas usadas en cada corrida
     """
+    if filename is None:
+        filename = OUTPUT_DIR + "tablas_hipervolumen.txt"
     with open(filename, 'w', encoding='utf-8') as f:
         f.write("="*100 + "\n")
         f.write("ESTADÍSTICAS DE HIPERVOLUMEN POR POLÍTICA Y GENERACIÓN\n")
@@ -119,7 +126,7 @@ def answer_questions(algorithms, hypervolume_results, data):
         hypervolume_results: Resultados de hipervolumen
         data: Datos del problema
     """
-    filename = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/respuestas_preguntas.txt"
+    filename = OUTPUT_DIR + "respuestas_preguntas.txt"
     
     with open(filename, 'w', encoding='utf-8') as f:
         f.write("="*80 + "\n")
@@ -276,7 +283,7 @@ def main():
     save_hypervolume_tables(
         hypervolume_results,
         data,
-        "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/tablas_hipervolumen.txt",
+        OUTPUT_DIR + "tablas_hipervolumen.txt",
         seeds=seeds
     )
     

@@ -20,6 +20,11 @@ from typing import List, Tuple, Dict
 import json
 
 # =============================================================================
+# CONFIGURACIÓN GLOBAL
+# =============================================================================
+OUTPUT_DIR = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/"
+
+# =============================================================================
 # CLASE PARA MANEJAR LOS DATOS DEL PROBLEMA
 # =============================================================================
 
@@ -1234,7 +1239,7 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
         
         # Graficar frente de Pareto
         plot_pareto_front(median_algorithm, policy, 
-                         f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/pareto_{policy}.png")
+                         OUTPUT_DIR + f"pareto_{policy}.png")
         
         # Obtener solución de la rodilla
         knee_solution = median_algorithm.find_knee_solution(policy)
@@ -1242,13 +1247,13 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
         if knee_solution:
             # Generar diagrama de Gantt para la rodilla
             create_gantt_chart(knee_solution, policy, data, 
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_knee.png")
+                             OUTPUT_DIR + f"gantt_{policy}_knee.png")
             
             # Generar reporte
             # Obtener la semilla del algoritmo de la corrida de mediana (aproximadamente la 5ta corrida)
             median_seed = num_runs // 2
             generate_report(median_algorithm, policy, knee_solution, 
-                          f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/report_{policy}.txt",
+                          OUTPUT_DIR + f"report_{policy}.txt",
                           seed=median_seed)
         
         # Obtener extremos del frente de Pareto
@@ -1259,11 +1264,11 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
             
             # Extremo con menor makespan
             create_gantt_chart(pareto_front[0], policy, data,
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_min_makespan.png")
+                             OUTPUT_DIR + f"gantt_{policy}_min_makespan.png")
             
             # Extremo con mayor makespan (menor energía generalmente)
             create_gantt_chart(pareto_front[-1], policy, data,
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_min_energy.png")
+                             OUTPUT_DIR + f"gantt_{policy}_min_energy.png")
     
     print(f"\n{'=' * 80}")
     print("EXPERIMENTACIÓN COMPLETADA")
