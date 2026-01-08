@@ -78,7 +78,8 @@ def quick_test():
         
         # Generar reporte
         generate_report(algorithm, test_policy, knee_solution,
-                       f"/mnt/user-data/outputs/test_report_{test_policy}.txt")
+                       f"/mnt/user-data/outputs/test_report_{test_policy}.txt",
+                       seed=42)
     
     print("\n" + "="*80)
     print("PRUEBA COMPLETADA EXITOSAMENTE")

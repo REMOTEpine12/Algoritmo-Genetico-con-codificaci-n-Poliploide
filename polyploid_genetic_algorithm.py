@@ -1106,7 +1106,7 @@ def create_gantt_chart(individual: Individual, policy: str,
 
 
 def generate_report(algorithm: PolyploidNSGAII, policy: str, 
-                   individual: Individual, filename: str):
+                   individual: Individual, filename: str, seed: int = None):
     """
     Genera un reporte en formato texto con los resultados.
     
@@ -1115,12 +1115,15 @@ def generate_report(algorithm: PolyploidNSGAII, policy: str,
         policy: Política del reporte
         individual: Individuo a reportar
         filename: Nombre del archivo de salida
+        seed: Semilla utilizada en la ejecución
     """
     with open(filename, 'w', encoding='utf-8') as f:
         f.write("=" * 80 + "\n")
         f.write("REPORTE DE RESULTADOS - PLANIFICACIÓN DE TAREAS\n")
         f.write("=" * 80 + "\n\n")
         
+        if seed is not None:
+            f.write(f"Semilla utilizada: {seed}\n")
         f.write(f"Política utilizada: {policy}\n")
         f.write(f"Makespan: {individual.objectives[policy][0]:.2f}\n")
         f.write(f"Consumo Energético Total: {individual.objectives[policy][1]:.2f}\n\n")
@@ -1178,7 +1181,7 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
     # Ejecutar múltiples corridas
     for run in range(num_runs):
         print(f"\n{'=' * 80}")
-        print(f"Ejecución {run + 1}/{num_runs}")
+        print(f"Ejecución {run + 1}/{num_runs} - SEMILLA: {run}")
         print(f"{'=' * 80}")
         
         # Crear algoritmo con semilla diferente
@@ -1242,8 +1245,11 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
                              f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_knee.png")
             
             # Generar reporte
+            # Obtener la semilla del algoritmo de la corrida de mediana (aproximadamente la 5ta corrida)
+            median_seed = num_runs // 2
             generate_report(median_algorithm, policy, knee_solution, 
-                          f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/report_{policy}.txt")
+                          f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/report_{policy}.txt",
+                          seed=median_seed)
         
         # Obtener extremos del frente de Pareto
         pareto_front = median_algorithm.get_pareto_front(policy)

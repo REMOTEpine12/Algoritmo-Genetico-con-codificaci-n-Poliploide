@@ -12,7 +12,7 @@ def print_section(title):
     print(title.center(80))
     print("="*80 + "\n")
 
-def save_hypervolume_tables(hypervolume_results, data, filename):
+def save_hypervolume_tables(hypervolume_results, data, filename, seeds=None):
     """
     Guarda las tablas de hipervolumen en un archivo.
     
@@ -20,11 +20,20 @@ def save_hypervolume_tables(hypervolume_results, data, filename):
         hypervolume_results: Diccionario con resultados de hipervolumen
         data: Datos del problema
         filename: Nombre del archivo de salida
+        seeds: Lista de semillas usadas en cada corrida
     """
     with open(filename, 'w', encoding='utf-8') as f:
         f.write("="*100 + "\n")
         f.write("ESTADÍSTICAS DE HIPERVOLUMEN POR POLÍTICA Y GENERACIÓN\n")
         f.write("="*100 + "\n\n")
+        
+        # Información de semillas
+        if seeds:
+            f.write("SEMILLAS USADAS EN CADA CORRIDA:\n")
+            f.write("-"*100 + "\n")
+            for i, seed in enumerate(seeds, 1):
+                f.write(f"  Corrida {i}: seed = {seed}\n")
+            f.write("\n")
         
         # Tabla 1: FIFO, LTP, STP
         f.write("Tabla 1: Políticas FIFO, LTP, STP\n")
@@ -77,6 +86,29 @@ def save_hypervolume_tables(hypervolume_results, data, filename):
         f.write("\n" + "="*100 + "\n")
     
     print(f"Tablas de hipervolumen guardadas en: {filename}")
+
+def print_and_track_seeds(num_runs):
+    """
+    Crea e imprime un diccionario de semillas para cada corrida.
+    
+    Args:
+        num_runs: Número de corridas
+    
+    Returns:
+        Lista de semillas usadas
+    """
+    seeds = list(range(num_runs))
+    
+    print("\n" + "="*80)
+    print("SEMILLAS PARA CADA CORRIDA")
+    print("="*80 + "\n")
+    
+    for i, seed in enumerate(seeds, 1):
+        print(f"  Corrida {i:2d}: seed = {seed}")
+    
+    print("\n" + "="*80 + "\n")
+    
+    return seeds
 
 def answer_questions(algorithms, hypervolume_results, data):
     """
@@ -227,6 +259,9 @@ def main():
     # Inicializar datos
     data = JobShopData()
     
+    # Imprimir y registrar las semillas que se usarán
+    seeds = print_and_track_seeds(NUM_RUNS)
+    
     # Ejecutar experimentos
     print_section("FASE 1: EJECUCIÓN DE ALGORITMOS")
     
@@ -241,7 +276,8 @@ def main():
     save_hypervolume_tables(
         hypervolume_results,
         data,
-        "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/tablas_hipervolumen.txt"
+        "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/tablas_hipervolumen.txt",
+        seeds=seeds
     )
     
     # Generar respuestas a preguntas
