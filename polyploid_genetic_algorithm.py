@@ -22,7 +22,7 @@ import json
 # =============================================================================
 # CONFIGURACIÓN GLOBAL
 # =============================================================================
-OUTPUT_DIR = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/"
+OUTPUT_DIR = "C:/Users/isria/Documents/ESCOM/semestre 8/topicos/Algoritmo-Genetico-con-codificaci-n-Poliploide/"
 
 # =============================================================================
 # CLASE PARA MANEJAR LOS DATOS DEL PROBLEMA
@@ -1171,13 +1171,14 @@ def generate_report(algorithm: PolyploidNSGAII, policy: str,
 # FUNCIÓN PRINCIPAL DE EXPERIMENTACIÓN
 # =============================================================================
 
-def run_experiment(num_runs: int = 10, generations: int = 100):
+def run_experiment(num_runs: int = 10, generations: int = 100, seeds: List[int] = None):
     """
     Ejecuta múltiples corridas del algoritmo y recopila estadísticas.
     
     Args:
         num_runs: Número de ejecuciones
         generations: Número de generaciones por ejecución
+        seeds: Lista de números primos para usar como semillas (si None, se usan 0, 1, 2...)
     """
     print("=" * 80)
     print("INICIO DE EXPERIMENTACIÓN")
@@ -1193,15 +1194,19 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
     # Almacenar algoritmos de cada corrida
     algorithms = []
     
+    # Generar semillas por defecto si no se proporcionan
+    if seeds is None:
+        seeds = list(range(num_runs))
+    
     # Ejecutar múltiples corridas
     for run in range(num_runs):
         print(f"\n{'=' * 80}")
-        print(f"Ejecución {run + 1}/{num_runs}")
+        print(f"Ejecución {run + 1}/{num_runs} (Semilla: {seeds[run]})")
         print(f"{'=' * 80}")
         
-        # Crear algoritmo con semilla diferente
+        # Crear algoritmo con semilla del número primo
         algorithm = PolyploidNSGAII(data, population_size=20, 
-                                   generations=generations, seed=run)
+                                   generations=generations, seed=seeds[run])
         
         # Ejecutar algoritmo
         final_population = algorithm.run(verbose=True)
@@ -1235,6 +1240,34 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
                 print(f"{gen:<12} {min_hv:<12.2f} {max_hv:<12.2f} "
                       f"{mean_hv:<12.2f} {std_hv:<12.2f}")
     
+    # Imprimir mejores individuos por política
+    print(f"\n{'=' * 80}")
+    print("MEJORES INDIVIDUOS POR POLÍTICA (Según Makespan y Energía)")
+    print(f"{'=' * 80}")
+    
+    for policy in data.policy_names:
+        print(f"\n{'Política: ' + policy:.<50}")
+        print("-" * 80)
+        
+        # Recopilar todos los frentes de Pareto de todas las corridas
+        all_pareto_individuals = []
+        for algorithm in algorithms:
+            pareto_front = algorithm.get_pareto_front(policy)
+            all_pareto_individuals.extend(pareto_front)
+        
+        if all_pareto_individuals:
+            # Mejor con menor makespan
+            best_makespan = min(all_pareto_individuals, 
+                               key=lambda x: x.objectives[policy][0])
+            ms_val, en_val = best_makespan.objectives[policy]
+            print(f"  ✓ Menor Makespan:      Makespan={ms_val:.2f}, Energía={en_val:.2f}")
+            
+            # Mejor con menor energía
+            best_energy = min(all_pareto_individuals, 
+                             key=lambda x: x.objectives[policy][1])
+            ms_val, en_val = best_energy.objectives[policy]
+            print(f"  ✓ Menor Energía:       Makespan={ms_val:.2f}, Energía={en_val:.2f}")
+    
     # Encontrar la ejecución con desempeño medio
     median_run_idx = num_runs // 2
     median_algorithm = algorithms[median_run_idx]
@@ -1249,7 +1282,7 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
         
         # Graficar frente de Pareto
         plot_pareto_front(median_algorithm, policy, 
-                         f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/pareto_{policy}.png")
+                         OUTPUT_DIR + f"pareto_{policy}.png")
         
         # Obtener solución de la rodilla
         knee_solution = median_algorithm.find_knee_solution(policy)
@@ -1257,11 +1290,11 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
         if knee_solution:
             # Generar diagrama de Gantt para la rodilla
             create_gantt_chart(knee_solution, policy, data, 
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_knee.png")
+                             OUTPUT_DIR + f"gantt_{policy}_knee.png")
             
             # Generar reporte
             generate_report(median_algorithm, policy, knee_solution, 
-                          f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/report_{policy}.txt")
+                          OUTPUT_DIR + f"report_{policy}.txt")
         
         # Obtener extremos del frente de Pareto
         pareto_front = median_algorithm.get_pareto_front(policy)
@@ -1271,11 +1304,11 @@ def run_experiment(num_runs: int = 10, generations: int = 100):
             
             # Extremo con menor makespan
             create_gantt_chart(pareto_front[0], policy, data,
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_min_makespan.png")
+                             OUTPUT_DIR + f"gantt_{policy}_min_makespan.png")
             
             # Extremo con mayor makespan (menor energía generalmente)
             create_gantt_chart(pareto_front[-1], policy, data,
-                             f"C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/gantt_{policy}_min_energy.png")
+                             OUTPUT_DIR + f"gantt_{policy}_min_energy.png")
     
     print(f"\n{'=' * 80}")
     print("EXPERIMENTACIÓN COMPLETADA")
@@ -1293,4 +1326,4 @@ if __name__ == "__main__":
     algorithms, hv_results = run_experiment(num_runs=10, generations=100)
     
     print("\n¡Todos los resultados han sido generados exitosamente!")
-    print("Revisa la carpeta C:/Users/isria/Documents/ESCOM/semestre 8/topicos/practica2/ para ver los archivos generados.")
+    print(f"Revisa la carpeta {OUTPUT_DIR} para ver los archivos generados.")
