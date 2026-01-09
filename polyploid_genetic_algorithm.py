@@ -39,20 +39,26 @@ class JobShopData:
         Inicializa los datos del problema según las tablas del documento.
         """
         # Número de máquinas disponibles
-        self.num_machines = 4
+        self.num_machines = 5
         
         # Número de operaciones totales
-        self.num_operations = 5
+        self.num_operations = 15
         
         # Definición de trabajos y sus operaciones
         # Cada trabajo es una lista de operaciones (índice base 0)
         self.jobs = {
-            1: [1, 3, 4],        # J1: {O2, O4, O5}
-            2: [0, 2, 4],        # J2: {O1, O3, O5}
-            3: [0, 1, 2, 3, 4],  # J3: {O1, O2, O3, O4, O5}
-            4: [3, 4],           # J4: {O4, O5}
-            5: [1, 3],           # J5: {O2, O4}
-            6: [0, 1, 3, 4]      # J6: {O1, O2, O4, O5}
+            1: [0, 4, 7, 11],        # J1: {O1,O5,O8,O12}
+            2: [1, 3, 5, 9, 13],        # J2: {O2,O4,O6,O10,O14}
+            3: [2, 6, 8, 10, 12, 14],  # J3: {O3,O7,O9,O11,O13,O15}
+            4: [0, 1, 2, 3, 4],           # J4: {O1, O2, O3, O4, O5}
+            5: [9, 10, 11, 12, 13, 14],           # J5: {O10,O11,O12,O13,O14,O15}
+            6: [4, 9, 14],      # J6: {O5, O10, O15}
+            7: [1, 7, 13],      # J7: {O2, O8, O14}
+            8: [0, 5, 10],      # J8: {O1, O6, O11}
+            9: [2, 3, 6, 7, 11, 14],  # J9: {O3,O4,O7,O8,O12,O15}
+            10: [8, 9, 10],      # J10: {O9,O10,O11}
+            11: [0, 2, 4, 6, 8, 10, 12, 14],  # J11: {O1,O3,O5,O7,O9,O11,O13,O15}
+            12: [1, 3, 5, 7, 9, 11, 13]      # J12: {O2,O4,O6,O8,O10,O12,O14}
         }
         
         # Número total de trabajos
@@ -61,21 +67,42 @@ class JobShopData:
         # Tabla de tiempos: tiempo[operacion][maquina]
         # Tiempos de procesamiento por operación en cada máquina
         self.processing_times = np.array([
-            [3.5, 6.7, 2.5, 8.2],  # O1
-            [5.5, 4.2, 7.6, 9.0],  # O2
-            [6.1, 7.3, 5.5, 6.7],  # O3
-            [4.8, 5.3, 3.8, 4.7],  # O4
-            [3.8, 3.4, 4.2, 3.6]   # O5
+            [4.4, 9.6, 7.6, 6.4, 2.4],  # O1
+            [2.4, 1.5, 8.8, 6.4, 7.4],  # O2
+            [1.2, 9.7, 8.5, 2.9, 2.6],  # O3
+            [2.7, 3.7, 5.7, 4.9, 3.6],  # O4
+            [6.5, 2.3, 3.6, 4.3, 5.1],  # O5
+            [8.1, 2.8, 5.6, 6.3, 1.4],  # O6
+            [6.5, 2.5, 1.6, 9.5, 9.7],  # O7
+            [8.3, 3.7, 1.9, 7.2, 5.0],  # O8
+            [2.1, 5.5, 1.3, 9.2, 3.3],  # O9
+            [7.0, 3.8, 5.7, 5.9, 2.7],  # O10
+            [9.7, 8.0, 9.5, 9.1, 6.4],  # O11
+            [9.3, 1.8, 2.8, 1.4, 3.9],  # O12
+            [4.5, 3.4, 8.5, 4.2, 3.5],  # O13
+            [5.9, 2.3, 8.2, 1.7, 9.9],  # O14
+            [8.0, 2.8, 1.0, 8.3, 7.4]   # O15
         ])
         
         # Tabla de consumo energético: energy[operacion][maquina]
         # Consumo energético por operación en cada máquina
         self.energy_consumption = np.array([
-            [1.2, 4.7, 3.5, 4.2],  # O1
-            [7.5, 1.5, 6.6, 3.5],  # O2
-            [1.1, 5.3, 8.5, 1.7],  # O3
-            [7.8, 3.3, 8.8, 9.7],  # O4
-            [1.9, 5.9, 7.5, 3.6]   # O5
+            [7.5, 2.5, 1.7, 4.0, 7.1],  # O1
+            [10.0, 10.0, 1.5, 2.9, 2.8],  # O2
+            [9.1, 2.2, 3.1, 9.6, 8.3],  # O3
+            [6.8, 8.2, 6.3, 6.3, 8.5],  # O4
+            [4.5, 8.8, 7.1, 4.8, 4.3],   # O5
+            [1.0, 8.7, 4.7, 4.7, 10.0],  # O6
+            [3.5, 8.1, 10.0, 1.0, 1.0],  # O7
+            [1.9, 5.9, 10.0, 5.0, 6.5],  # O8
+            [10.0, 6.7, 8.4, 3.4, 7.9],  # O9
+            [5.2, 8.8, 4.6, 3.5, 7.2],  # O10
+            [1.0, 4.3, 2.9, 1.0, 4.6],  # O11
+            [1.4, 8.1, 6.7, 9.0, 8.9],  # O12
+            [5.8, 7.7, 3.3, 6.3, 9.4],  # O13
+            [6.9, 7.7, 2.8, 8.5, 1.0],  # O14
+            [1.1, 8.6, 10.0, 1.0, 2.7]   # O15
+
         ])
         
         # Calcular el número total de operaciones a planificar
