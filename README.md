@@ -1,12 +1,12 @@
 # ALGORITMO GENÉTICO POLIPLOIDE PARA PLANIFICACIÓN DE TAREAS
 
-## 📋 Descripción General
+## Descripción General
 
 Este proyecto implementa un **Algoritmo Genético con codificación Poliploide** usando **NSGA-II** para resolver el problema de planificación de tareas (Job Shop Scheduling Problem) optimizando dos objetivos:
 1. **Makespan** (tiempo total de ejecución)
 2. **Consumo energético total**
 
-## 🏗️ Estructura del Código
+## Estructura del Código
 
 ### 1. Clase `JobShopData`
 **Propósito**: Almacenar y gestionar todos los datos del problema.
@@ -118,7 +118,7 @@ Calcula el hipervolumen del frente de Pareto:
 - Punto de referencia: 10% peor que el peor valor encontrado
 - Algoritmo de barrido para cálculo eficiente
 
-## 🔧 Políticas de Atención Implementadas
+## Políticas de Atención Implementadas
 
 ### 1. FIFO (First In, First Out)
 Las operaciones se atienden en el orden de llegada (orden de trabajo):
@@ -151,7 +151,7 @@ Round Robin pero ordenando trabajos por tiempo promedio descendente.
 ### 6. RRECA (Round Robin + Energy Consumption Average)
 Round Robin pero ordenando trabajos por consumo energético ascendente.
 
-## 📊 Funciones Objetivo
+## Funciones Objetivo
 
 ### F1: Makespan (Minimizar)
 ```
@@ -167,20 +167,20 @@ energía_total = Σ(energía_consumida_por_máquina_i)
 - Suma del consumo de todas las máquinas
 - Incluye solo el consumo durante procesamiento
 
-## 🎯 Características Especiales
+## Características Especiales
 
 ### Restricciones Respetadas:
-1. ✅ Las operaciones de un trabajo deben ejecutarse en orden
-2. ✅ Una operación no puede reasignarse una vez programada
-3. ✅ Una máquina solo puede procesar una operación a la vez
-4. ✅ No hay tiempos de setup entre operaciones
+1. Las operaciones de un trabajo deben ejecutarse en orden
+2. Una operación no puede reasignarse una vez programada
+3. Una máquina solo puede procesar una operación a la vez
+4. No hay tiempos de setup entre operaciones
 
 ### Optimización Multi-Objetivo:
 - Usa concepto de dominancia de Pareto
 - Mantiene diversidad con crowding distance
 - Genera frente de Pareto con múltiples soluciones de compromiso
 
-## 📈 Métricas de Evaluación
+## Métricas de Evaluación
 
 ### Hipervolumen
 - Mide la calidad del frente de Pareto
@@ -192,7 +192,7 @@ energía_total = Σ(energía_consumida_por_máquina_i)
 - Se encuentra como el punto más cercano al ideal (0, 0) normalizado
 - Representa un equilibrio óptimo entre makespan y energía
 
-## 🚀 Uso del Código
+## Uso del Código
 
 ### Prueba Rápida
 ```bash
@@ -235,7 +235,7 @@ for policy in data.policy_names:
     create_gantt_chart(knee_solution, policy, data, f"gantt_{policy}.png")
 ```
 
-## 📁 Archivos Generados
+## Archivos Generados
 
 ### Imágenes
 - `pareto_{POLICY}.png`: Frente de Pareto para cada política
@@ -246,7 +246,7 @@ for policy in data.policy_names:
 ### Reportes
 - `report_{POLICY}.txt`: Tabla con asignaciones y objetivos
 
-## 🔬 Parámetros Recomendados
+## Parámetros Recomendados
 
 ```python
 population_size = 20       # Tamaño de población
@@ -260,19 +260,19 @@ mutation_rates = {
 }
 ```
 
-## 💡 Ventajas de la Codificación Poliploide
+## Ventajas de la Codificación Poliploide
 
 1. **Exploración paralela**: Cada cromosoma explora con diferente política
 2. **Diversidad natural**: Múltiples representaciones en un solo individuo
 3. **Información redundante**: Mayor robustez ante mutaciones
 4. **Especialización**: Cada cromosoma puede especializarse en su política
 
-## 📚 Referencias
+## Referencias
 
 - Deb, K., et al. (2002). A fast and elitist multiobjective genetic algorithm: NSGA-II
 - Algoritmos genéticos poliploides para optimización multi-objetivo
 - Job Shop Scheduling Problem: formulaciones y métodos de solución
 
-## 👥 Autor
+## Autor
 - [@Remotepine99](https://github.com/REMOTEpine12) - Israel Díaz
 - [@AtzMax](https://github.com/AtzMax) - Atzin Ignacio
